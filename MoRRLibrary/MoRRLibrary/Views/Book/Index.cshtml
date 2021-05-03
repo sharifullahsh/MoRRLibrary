@@ -1,0 +1,236 @@
+﻿@model IEnumerable<MoRRLibrary.Models.Book>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="h4 mb-2 text-gray-800">کتاب ها</h4>
+
+<div class="card shadow">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">جستجو </h6>
+    </div>
+    <div class="card-body">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label>نام کتاب</label>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="txtBookName" />
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>نام نویسنده</label>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="txtAuthor" />
+                    </div>
+                </div> 
+                <div class="form-group col-md-4">
+                    <label>کود نمبر کتاب</label>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="txtSerialNumber" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col text-right">
+                    <button type="button" id="btnSearch" class="btn-success btn-sm pl-lg-5 pr-lg-5">جستجو</button>
+                    <button type="reset" id="btnReset" class="btn-warning btn-sm pl-lg-5 pr-lg-5">لغو</button>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col align-items-lg-end">
+                <a href='@Url.Action("Create","Book")' class="AddBook btn btn-sm btn-success">
+                    اضافه نمودن کتاب
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card shadow mt-2">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">لیست کتاب ها</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped" style="width:100%" cellspacing="0" id="booksTable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Author)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Language.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.CabinetNumber)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ShelfNumber)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.SerialNumber)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="SetBookList">
+                    <tr id="LoadingStatus"></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@* Delete dialog *@
+<div class="modal fade" id="deleteModel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 id="ModalTitle">حذب کتاب</h4>
+            </div>
+            <div class="modal-body">
+                <h3>ایا مطمعین استید که ریکار باید حذب شود؟</h3>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+@* View dialog *@
+<div class="modal hide fade" id="viewBookModal">
+    <div class="modal-dialog mw-100 w-75">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                @*<h4 id="ModalTitle"> جزیات کتاب</h4>*@
+            </div>
+            <div class="modal-body" id="ViewBookModalBody">
+               
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">برگشت</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+    {
+    <script>
+        $(document).ready(function () {
+            var booksTable = $('#booksTable').DataTable({
+                "language":
+                {
+                    "processing": "<div class='overlay custom-loader-background'><i class='fa fa-cog fa-spin custom-loader-color'></i></div>"
+                },
+                "processing": true,
+                "serverSide": true,
+                "orderMulti": false,
+                "dom": '<"top"i>rt<"bottom"lp><"clear">',
+                ajax: {
+                    url: "/Book/getBooks",
+
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                //searching: false, paging: true, info: true,
+                columns: [
+                    {
+                        data: "Name"
+                    },
+                    {
+                        data: "Author"
+                    },
+                    {
+                        data: "Language"
+                    },
+                    {
+                        data: "CabinetNumber"
+                    },
+                    {
+                        data: "ShelfNumber"
+                    },
+                    {
+                        data: "SerialNumber"
+
+                    },
+
+                    {
+                        data: "Id",
+                        render: function (data) {
+                            return "<button title='خذب' class='btn btn-sm btn-danger m-1 js-delete' data-book-id=" + data + "><i class='fas fa-trash  p-1'></i>حذف</button>" +
+                                "<a href='/Book/Edit/" + data + "' title='تغیر' class='btn m-1 btn-sm btn-success'><i class='fas fa-check  p-1'></i>تغیر</a>" +
+                                "<button title='جزیات' class='btn btn-sm js-view btn-success' data-book-id=" + data + "><i class='fas fa-eye  p-1'></i></button>";
+                        }
+                    }
+                ]
+            });
+            $('#btnSearch').on("click", function () {
+                booksTable.columns(0).search($('#txtBookName').val().trim());
+                booksTable.columns(1).search($('#txtAuthor').val().trim());
+                booksTable.columns(5).search($('#txtSerialNumber').val().trim());
+                booksTable.draw();
+            });
+            $("#btnReset").click(function () {
+                booksTable.columns(0).search("");
+                booksTable.columns(1).search("");
+                booksTable.columns(5).search($('#txtSerialNumber').val().trim());
+                booksTable.draw();
+            });
+
+            $('#booksTable').on("click", '.js-delete', function () {
+                var button = $(this);
+
+                //Start delete
+                bootbox.confirm({
+                    title: " ",
+                    message: "ایا مطمعین استید که ریکار باید حذب شود؟",
+                    buttons: {
+                        confirm: {
+                            label: 'حذب',
+                            className: 'btn-success mr-2'
+                        },
+                        cancel: {
+                            label: 'لغو',
+                            className: 'btn-danger'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            $.ajax({
+                                url: "/Book/Delete/" + button.attr("data-book-id"),
+                                method: "POST",
+                                success: function () {
+                                    toastr.success(response.responseText);
+                                    booksTable.row(button.parents("tr")).remove().draw();
+                                },
+                                error: function (response) {
+                                    toastr.error(response.responseText);
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+                //End Delete
+
+                $('#booksTable').on("click", '.js-view', function () {
+                    var button = $(this);
+                    var url = "/Book/ViewBook/" + button.attr("data-book-id");
+                    $.get(url, function (data) {
+                        $('#ViewBookModalBody').html(data);
+                        $('#viewBookModal').modal('show');
+                    });
+                });
+        });
+    </script>
+}
+

@@ -1,0 +1,202 @@
+﻿@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>MoRR Library</title>
+    <!-- Custom fonts for this template-->
+    <link href="~/Content/vendor/fontawesome-free/css/all.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    @Styles.Render("~/Content/styles")
+
+</head>
+
+<body id="page-top" dir="rtl">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href='@Url.Action("Index","Home")'>
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">سیستم کتابخانه</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="/">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>معلومات عمومی</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            <!--Borrow and return book -->
+            <li class="nav-item">
+                <a class="nav-link" href='@Url.Action("Index","Borrow")'>
+                    <i class="fas fa-fw fa-book-reader"></i>
+                    <span>اخذ و برگشت منابع</span>
+                </a>
+            </li>
+            <!--Logs-->
+            <li class="nav-item">
+                <a class="nav-link" href='@Url.Action("Logs","Borrow")'>
+                    <i class="fas fa-history"></i>
+                    <span>یاداشت ها</span>
+                </a>
+            </li>
+            <!--Employee -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href='@Url.Action("Index","Employee")' aria-expanded="true">
+                    <i class="fas fa-fw fa-user"></i>
+                    <span>اعضاء</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Utilities Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href='@Url.Action("Index","Book")'>
+                    <i class="fas fa-fw fa-book"></i>
+                    <span>کتاب</span>
+                </a>
+            </li>
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href='@Url.Action("Index","OfficialMagazine")'>
+                    <i class="fas fa-fw fa-book"></i>
+                    <span>جریده</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href='@Url.Action("Index","Magazine")'>
+                    <i class="fas fa-fw fa-book"></i>
+                    <span>مجله</span>
+                </a>
+            </li> 
+            <!-- Nav Item - Pages Collapse Menu -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href='@Url.Action("Index","Electronic")'>
+                    <i class="fas fa-fw fa-book"></i>
+                    <span>کتاب های الکترونکی</span>
+                </a>
+            </li>
+            <!--Lookups-->
+            <li class="nav-item">
+                <a class="nav-link" href='@Url.Action("Index","Lookups")'>
+                    <i class="fas fa-list"></i>
+                    <span>لیست ها</span>
+                </a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+        </ul>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow row">
+                    <!-- Topbar Search -->
+                    <div class="col-md-10" id="appHeading">
+                        <div class="row">
+                            <div class="col-1 align-items-center"><img src="~/favicon.ico" class="d-inline-block" /></div>
+                            <div class="col-md-11 align-items-center m-auto d-none d-md-block">
+                                <h4 class="">سیستم الکترونکی کتابخانه وزارت امور مهاجرین و عودت کنندگان</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto rtl-navbar col-md-2 text-center">
+                            <div class="row" id="userInfoDropDown">
+                                <div class="topbar-divider d-none d-sm-block"></div>
+                                <!-- Nav Item - User Information -->
+                                <li class="nav-item dropdown no-arrow" id="userInfo">
+                                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-user"></i>
+                                        <span class="mr-2 d-none d-lg-inline text-gray-600 small">@User.Identity.GetUserName()</span>
+                                        @*<img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">*@
+                                    </a>
+                                    <!--Dropdown - User Information-->
+                                    <div class="dropdown-menu dropdown-menu-right ml-3 shadow animated--grow-in" aria-labelledby="userDropdown">
+                                        @*<a class="dropdown-item" href='@Url.Action("Settings","Account")'>
+                                            <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                            تنظیمات
+                                        </a>*@            
+                                        @*<div class="dropdown-divider"></div>*@
+                                        <a class="dropdown-item" href='@Url.Action("LogOff","Account")'>
+                                            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                            خروج
+                                        </a>
+                                    </div>
+                                </li>
+                            </div>
+                        </ul>
+                </nav>
+                <!-- End of Topbar -->
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    @RenderBody()
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span id="copyWriteText">حق نشر محفوظ است</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Bootstrap core JavaScript-->
+
+    @Scripts.Render("~/bundles/lib")
+    <script src="~/Content/MdBootstrapPDateTimePicker/jquery.md.bootstrap.datetimepicker.js"></script>
+    @RenderSection("scripts", required: false)
+    <script src="~/Scripts/bootbox.min.js"></script>
+    @* Customize toastr *@
+    <script type="text/javascript">
+        toastr.options.positionClass = 'toast-top-left';
+    </script>
+</body>
+
+</html>

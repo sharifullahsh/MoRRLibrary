@@ -1,0 +1,75 @@
+﻿@model MoRRLibrary.ViewModels.BorrowPublicationViewModel
+
+@{
+    ViewBag.Title = "BorrowItem";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="h4 mb-2 text-gray-800">اخذ منابع</h4>
+
+<a href='@Url.Action("Index","Borrow")' class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i  class="fas fa-arrow-left fa-sm text-white"></i></a>
+<div class="card shadow">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">معلومات اخذ کننده</h6>
+    </div>
+    <div class="card-body w-100">
+        <form>
+            <div class="row text-right m-0 p-0 w-100 ">
+
+                @Html.LabelFor(model => model.Employee.Name, new { @class = "m-0 font-weight-bold col-md-1" }):
+                <div class="col-md-2">
+                    @Html.DisplayFor(model => model.Employee.Name)
+                </div>
+
+                @Html.LabelFor(model => model.Employee.DepartmentName, new { @class = "m-0 font-weight-bold  col-md-1" }):
+                <div class="col-md-3">
+                    @Html.DisplayFor(model => model.Employee.DepartmentName)
+                </div>
+
+                @Html.LabelFor(model => model.Employee.EmployeeCode, new { @class = "m-0 font-weight-bold col-md-2" }):
+                <div class="col-md-2">
+                    @Html.DisplayFor(model => model.Employee.EmployeeCode)
+                </div>
+                @Html.HiddenFor(model=>model.Employee.Id, new { id = "employeeId" })
+            </div>
+        </form>
+
+    </div>
+</div>
+<div class="card shadow mt-2">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">منابع اخذ شده</h6>
+    </div>
+    <div class="card-body">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" id="morrtab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="book-tab" data-toggle="tab" href="#book" role="tab" aria-controls="book" aria-selected="true">کتاب</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#magazine" role="tab" aria-controls="profile" aria-selected="false">مجله</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="messages-tab" data-toggle="tab" href="#officialMagazine" role="tab" aria-controls="messages" aria-selected="false">جریده</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="book" role="tabpanel" aria-labelledby="Book-tab">
+                @Html.Partial("_BorrowReturnBookPartial")
+            </div>
+            <div class="tab-pane" id="magazine" role="tabpanel" aria-labelledby="Magazine-tab">
+                @Html.Partial("_MagazineDistribution")
+            </div>
+            <div class="tab-pane" id="officialMagazine" role="tabpanel" aria-labelledby="Offical-Magazine-tab">
+               @Html.Partial("_BorrowReturnOfficialMagazine")
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+   <script src="~/Scripts/BorrowAndReturn/BorrowReturnBook.js"></script>
+    <script src="~/Scripts/BorrowAndReturn/MagazineDistribution.js"></script>
+    <script src="~/Scripts/BorrowAndReturn/BorrowReturnOfficialMagazine.js"></script>
+}

@@ -1,0 +1,110 @@
+﻿@model MoRRLibrary.Models.Book
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="h4 mb-2 text-gray-800">تغیر کتاب</h4>
+<div class="card shadow">
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">کتاب</h6>
+    </div>
+    <div class="card-body">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model=>model.IsActive)
+        @Html.HiddenFor(model=>model.AvailableQuantity)
+        <div class="form-row">
+            <div class="form-group col-md-5">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group col-md-5">
+                @Html.LabelFor(model => model.Author, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Author, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-5">
+                @Html.LabelFor(model => model.Translator, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Translator, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Translator, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group col-md-5">
+                @Html.LabelFor(model => model.Publisher, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Publisher, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Publisher, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-5">
+                @Html.LabelFor(model => model.LanguageId, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.DropDownList("LanguageId", null, "--زبان کتاب را انتخاب نماید--", htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.LanguageId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group col-md-5">
+                @Html.LabelFor(model => model.SerialNumber, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.SerialNumber, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.SerialNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-5">
+                @Html.LabelFor(model => model.CabinetNumber, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.CabinetNumber, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.CabinetNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="form-group col-md-5">
+                @Html.LabelFor(model => model.ShelfNumber, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.ShelfNumber, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.ShelfNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-5">
+                @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer">
+        <div class="form-group form-row">
+            <input type="submit" value="ثبت" class="btn btn-success m-1" />
+            @Html.ActionLink("لغو", "Index", "Book", new { @class = "btn btn-warning m-1" })
+        </div>
+        <div class="form-row flex-row-reverse">
+            @Html.ActionLink("برگشت به لیست کتاب ها", "Index")
+        </div>
+    </div>
+</div>
+}
+</div>

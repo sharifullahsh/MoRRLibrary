@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h5>تنظیمات کاربر</h5>
+<div class="card shadow">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">نام کاربر : @User.Identity.GetUserName() </h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped" style="width:100%" cellspacing="0" id="employeesTable">
+                <thead>
+                    <tr>
+                        <th>
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="text-right">
+                        <td>تغیر رمز</td>
+                        <td><a href='#' class="btn btn-primary btn-sm"><i class="fas fa-key"></i>   
+                                تغیر
+                            </a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

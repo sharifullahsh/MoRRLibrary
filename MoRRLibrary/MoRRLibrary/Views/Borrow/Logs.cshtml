@@ -1,0 +1,164 @@
+﻿
+@{
+    ViewBag.Title = "Logs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="h4 mb-2 text-gray-800">یاداشت ها</h4>
+<div class="card shadow">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">جستجو</h6>
+    </div>
+    <div class="card-body">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label>نام عضو</label>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="txtEmployeeName" />
+                    </div>
+                </div>
+                <div class=" form-group col-md-4">
+                    <label>کود / تذکره نمبر  عضو</label>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="txtEmployeeCode" />
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>نوع منبع</label>
+                    <div class="col-md-12">
+                        @Html.DropDownList("ItemTypeId", null, "--نوع نشریه را انتخاب نماید--", new { @class = "form-control", @direction = "ltr" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label>نام منبع</label>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="txtPublicationName" />
+                    </div>
+                </div>
+                <div class="form-group col-md-4 mt-auto">
+                    <input type="checkbox" class="form-check-input" id="isReturned">
+                    <label class="form-check-label w-50 mr-3" for="isReturn">منابع بازگشتی اضافه گردد</label>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4 text-right">
+                    <button type="button" id="btnSearch" class="btn-success btn-sm pl-lg-5 pr-lg-5 m-1">جستجو</button>
+                    <button type="reset" id="btnReset" class="btn-warning btn-sm pl-lg-5 pr-lg-5 m-1">لغو</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow mt-2">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">لیست اعضاء</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped" style="width:100%" cellspacing="0" id="borrowedLogsTable">
+                <thead>
+                    <tr>
+                        <th>
+                            اسم
+                        </th>
+                        <th>
+                            کود / تذکره نمبر عضو
+                        </th>
+                        <th>
+                            نوع منبع
+                        </th>
+                        <th>
+                            نام منبع
+                        </th>
+                        <th>
+                            تاریخ اخد
+                        </th>
+                        <th>
+                            وضعیت برگشت
+                        </th>
+                        <th>
+                            تاریخ برگشت
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section scripts
+    {
+    <script>
+        $(document).ready(function () {
+            var borrowedLogsTable = $('#borrowedLogsTable').DataTable({
+                "language":
+                {
+                    "processing": "<div class='overlay custom-loader-background'><i class='fa fa-cog fa-spin custom-loader-color'></i></div>"
+                },
+                "processing": true,
+                "serverSide": true,
+                "orderMulti": false,
+                "dom": '<"top"i>rt<"bottom"lp><"clear">',
+                ajax: {
+                    url: "/Borrow/getLogs",
+
+                    "type": "POST",
+                    "datatype": "json",
+                },
+                //searching: false, paging: true, info: true,
+                columns: [
+                    {
+                        data: "employeeName"
+                    },
+                    {
+                        data: "employeeCode"
+                    },
+                    {
+                        data: "publicationType"
+                    },
+                    {
+                        data: "publicationName"
+                    },
+                    {
+                        data: "BorrowingDate"
+                    },
+                    {
+                        data: "IsReturned"
+                    },
+                    {
+                        data: "RetrunDate"
+                    }
+                    //,
+                    //{
+                    //    data: "borrowId",
+                    //    render: function (data) {
+                    //        return "<a href='/Borrow/BorrowItem/" + data + "' title='انتخاب' class='btn btn-sm btn-success'><i class='fas fa-user p-1'></i>انتخاب</a>";
+                    //    }
+                    //}
+                ]
+            });
+            $('#btnSearch').click(function () {
+                borrowedLogsTable.columns(0).search($('#txtEmployeeName').val().trim());
+                borrowedLogsTable.columns(1).search($('#txtEmployeeCode').val().trim());
+                borrowedLogsTable.columns(2).search($('#ItemTypeId').val());
+                borrowedLogsTable.columns(3).search($('#txtPublicationName').val());
+                borrowedLogsTable.columns(4).search($('#isReturned').prop('checked'));
+                borrowedLogsTable.draw();
+            });
+            $("#btnReset").click(function () {
+                borrowedLogsTable.columns(0).search("");
+                borrowedLogsTable.columns(1).search("");
+                borrowedLogsTable.columns(2).search("");
+                borrowedLogsTable.columns(3).search("");
+                borrowedLogsTable.columns(4).search("");
+                borrowedLogsTable.draw();
+            })
+        });
+    </script>
+}
+
+

@@ -1,0 +1,207 @@
+﻿@model MoRRLibrary.ViewModels.EmployeeViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="h4 mb-2 text-gray-800">اعضاء کتابخانه</h4>
+
+<div class="card shadow">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">جستجو </h6>
+    </div>
+    <div class="card-body">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label>نام و تخلص عضو</label>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="txtEmployeeName" />
+                    </div>
+                </div>
+                <div class=" form-group col-md-4">
+                    <label>کود نمبر عضو</label>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="txtEmployeeCode" />
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>نام ریاست</label>
+                    <div class="col-md-12">
+                        @Html.DropDownList("DepartmentId", null, "--ریاست را انتخاب کنید--", new { @class = "form-control", @direction = "ltr" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4 text-right">
+                    <button type="button" id="btnSearch" class="btn-success btn-sm pl-lg-5 pr-lg-5 m-1">جستجو</button>
+                    <button type="reset" id="btnReset" class="btn-warning btn-sm pl-lg-5 pr-lg-5 m-1">لغو</button>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col text-left">
+                <a href='@Url.Action("Create","Employee")' class="AddNewEmployee btn btn-sm btn-success">
+                    ثبت مراجعین
+                    <i class="fas fa-user-plus"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card shadow mt-2">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">لیست اعضاء</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped" style="width:100%" cellspacing="0" id="employeesTable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.EmployeeCode)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model=>model.DepartmentName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model=>model.IsEmployee)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Designation)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Phone)
+                        </th>
+                        <th></th>
+                        @*<th>تغیر</th>*@
+                        @*<th>حذب</th>*@
+                    </tr>
+                </thead>
+                <tbody id="SetEmployeeList">
+                    <tr id="LoadingStatus"></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@* Delete dialog *@
+<div class="modal fade" id="deleteModel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 id="ModalTitle">حذب عضو</h4>
+            </div>
+            <div class="modal-body">
+                <h3>آیا مطمعین استید که ریکار باید حذب شود؟</h3>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- sometime later, probably inside your on load event callback -->
+@section scripts
+    {
+    <script>
+        $(document).ready(function () {
+            var employeeTable = $('#employeesTable').DataTable({
+                "language":
+                {
+                    "processing": "<div class='overlay custom-loader-background'><i class='fa fa-cog fa-spin custom-loader-color'></i></div>"
+                },
+                "processing": true,
+                "serverSide": true,
+                "orderMulti": false,
+                "dom": '<"top"i>rt<"bottom"lp><"clear">',
+                ajax: {
+                    url: "/Employee/getEmployees",
+
+                    "type": "POST",
+                    "datatype": "json",
+                },
+                //searching: false, paging: true, info: true,
+                columns: [
+                    {
+                        data: "Name"
+                    },
+                    {
+                        data: "EmployeeCode"
+                    },
+                    {
+                        data: "DepartmentName"
+                    },
+                    {
+                        data: "IsEmployee"
+                    },
+                    {
+                        data: "Designation"
+                    },
+                    {
+                        data: "Phone"
+                    },
+                    {
+                        data: "Id",
+                        render: function (data) {
+                            return "<button title='خذب' class='btn m-1 btn-sm btn-danger js-delete' data-employee-id=" + data + "><i class='fas fa-trash  p-1'></i> حذف </button>" +
+                                "<a href='/Employee/Edit/" + data +"' title='تغیر' class='btn btn-sm btn-success'><i class='fas fa-check  p-1'></i> تغیر</a>";
+                        }
+                    }
+                ]
+            });
+            $('#btnSearch').click(function () {
+                employeeTable.columns(0).search($('#txtEmployeeName').val().trim());
+                employeeTable.columns(1).search($('#txtEmployeeCode').val().trim());
+                employeeTable.columns(2).search($('#DepartmentId').val());
+                employeeTable.draw();
+            });
+            $("#btnReset").click(function () {
+                employeeTable.columns(0).search("");
+                employeeTable.columns(1).search("");
+                employeeTable.columns(2).search("");
+                employeeTable.draw();
+            })
+        //Start delete
+            $('#employeesTable').on("click", '.js-delete', function () {
+                var button = $(this);
+                bootbox.confirm({
+                title: " ",
+                message: "ایا مطمعین استید که ریکار باید حذب شود؟",
+                buttons: {
+                confirm: {
+                label: 'حذب',
+                className: 'btn-success mr-2'
+                },
+                cancel: {
+                label: 'لغو',
+                className: 'btn-danger'
+            }
+            },
+            callback: function (result) {
+                if (result) {
+                    $.ajax({
+                        url: "/Employee/Delete/" + button.attr("data-employee-id"),
+                        method: "POST",
+                        success: function (response) {
+                        toastr.success(response.responseText);
+                        employeeTable.row(button.parents("tr")).remove().draw();
+                        }, 
+                        error: function (response) {
+                        toastr.error(response.responseText);
+                        }
+                    });
+                    }
+                }
+             });
+            });
+        //End delete
+        });
+    </script>
+}
+

@@ -1,0 +1,42 @@
+﻿@model MoRRLibrary.Models.Book
+    @{ 
+        Layout = null;
+    }
+
+<div>
+    <h4 class="h4 mb-2 text-primary">جزئیات کتاب</h4>
+    <hr />
+    <div class="form-horizontal" id="viewDetails">
+        <div class="form-row border-bottom">
+            <div class="col-md-2 label font-weight-bold">@Html.DisplayNameFor(model => model.Name)</div>
+            <div class="col-md-4 border-left">@Html.DisplayFor(model => model.Name)</div>
+            <div class="col-md-2 label font-weight-bold">@Html.DisplayNameFor(model => model.Language.Name)</div>
+            <div class="col-md-4">@Html.DisplayFor(model => model.Language.Name)</div>
+
+        </div>
+        <div class="form-row border-bottom">
+            <div class="col-md-2 label font-weight-bold">@Html.DisplayNameFor(model => model.Author)</div>
+            <div class="col-md-4 border-left">@Html.DisplayFor(model => model.Author)</div>
+            <div class="col-md-2 label font-weight-bold">@Html.DisplayNameFor(model => model.Translator)</div>
+            <div class="col-md-4">@Html.DisplayFor(model => model.Translator)</div>
+        </div>
+        <div class="form-row m-1 border-bottom">
+            <div class="col-md-2 label font-weight-bold">@Html.DisplayNameFor(model => model.Publisher)</div>
+            <div class="col-md-4 border-left">@Html.DisplayFor(model => model.Publisher)</div>
+            <div class="col-md-2 label font-weight-bold">@Html.DisplayNameFor(model => model.Quantity)</div>
+            <div class="col-md-4">@Html.DisplayFor(model => model.Quantity)</div>
+        </div>
+        <div class="form-row m-1 border-bottom">
+            <div class="col-md-2 label font-weight-bold">@Html.DisplayNameFor(model => model.CabinetNumber)</div>
+            <div class="col-md-4 border-left">@Html.DisplayFor(model => model.CabinetNumber)</div>
+            <div class="col-md-2 label font-weight-bold">@Html.DisplayNameFor(model => model.ShelfNumber)</div>
+            <div class="col-md-4">@Html.DisplayFor(model => model.ShelfNumber)</div>
+         </div>
+        <div class="form-row m-1">
+            <div class="col-md-2 label font-weight-bold">@Html.DisplayNameFor(model => model.SerialNumber)</div>
+            <div class="col-md-4 border-left">@Html.DisplayFor(model => model.SerialNumber)</div>
+            <div class="col-md-2 label font-weight-bold">@Html.DisplayNameFor(model => model.Quantity)</div>
+            <div class="col-md-4">@Html.DisplayFor(model => model.Quantity)</div>
+        </div>
+    </div>
+</div>

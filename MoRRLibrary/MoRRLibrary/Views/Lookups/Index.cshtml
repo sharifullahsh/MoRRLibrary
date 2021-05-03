@@ -1,0 +1,397 @@
+﻿@model MoRRLibrary.ViewModels.LookupsViewModel
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4 class="h4 mb-2 text-gray-800">لیست ها</h4>
+<div class="card shadow mt-2">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary"> لیست بخش های انتخابی</h6>
+    </div>
+    <div class="card-body">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" id="morrtab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="Departemnts-tab" data-toggle="tab" href="#departments" role="tab" aria-controls="Departments" aria-selected="true">ریاست ها</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="langauges-tab" data-toggle="tab" href="#languages" role="tab" aria-controls="Languages" aria-selected="false">زبان ها</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="departments" role="tabpanel" aria-labelledby="Departments-tab">
+                <div class="row m-3">
+                    <h6 class="m-0 font-weight-bold text-primary"> ریاست ها</h6>
+                </div>
+                <div class="row">
+                    <div class="col align-items-lg-end">
+                        <a href='#' class="addDepartmentDialog btn btn-sm btn-success">
+                            اضافه نمودن ریاست
+                            <i class="fas fa-language mr-1"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="table-responsive row">
+                    <table class="table table-bordered table-striped" style="width:100%" cellspacing="0" id="departmentTable">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(model => model.Department.Name)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane" id="languages" role="tabpanel" aria-labelledby="Languages-tab">
+                <div class="row m-3">
+                    <h6 class="m-0 font-weight-bold text-primary">لیست زبان های کتاب  ها</h6>
+                </div>
+                <div class="row">
+                    <div class="col align-items-lg-end">
+                        <a href='#' class="addLanguageDialog btn btn-sm btn-success">
+                            اضافه نمودن زبان
+                            <i class="fas fa-language mr-1"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="table-responsive row">
+                    <table class="table table-bordered table-striped" style="width:100%" cellspacing="0" id="languageTable">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(model => model.Language.Name)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Add language dialog *@
+<div class="modal hide fade" id="saveLanguageModal">
+    <div class="modal-dialog mw-100 w-50">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                <h4 id="languageModalTitle"></h4>
+            </div>
+            <div class="modal-body" id="ViewBookModalBody">
+                @using (Html.BeginForm("SaveLanguage", "Lookups", FormMethod.Post, new { id = "languageForm", name = "languageForm" }))
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Language.Name, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.Language.Name, new { htmlAttributes = new { @id = "languageName", @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Language.Name, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    @Html.HiddenFor(model => model.Language.Id, new { @id = "languageId" })
+                    <div class="form-group">
+                        <button type="button" class="btn btn-success" id="saveLanaguage">ثبت</button>
+                    </div>}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteLanguageModel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 id="ModalTitle">حذب زبان</h4>
+            </div>
+            <div class="modal-body">
+                <h3>ایا مطمعین استید که ریکار باید حذب شود؟</h3>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+@* Add department dialog *@
+<div class="modal hide fade" id="saveDepartmentModal">
+    <div class="modal-dialog mw-100 w-50">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">&times;</a>
+                <h4 id="departmentModalTitle"></h4>
+            </div>
+            <div class="modal-body" id="addDepartmentModalBody">
+                <form class="form-horizontal" method="post" id="departmentForm">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Department.Name, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.Department.Name, new { htmlAttributes = new { @id = "departmentName", @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Department.Name, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    @Html.HiddenFor(model => model.Department.Id, new { @id = "departmentId" })
+                    <div class="form-group">
+                        <button type="button" class="btn btn-success" id="saveDepartment">ثبت</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@*Delete department*@
+<div class="modal fade" id="deleteDepartmentModel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 id="ModalTitle">حذب ریاست</h4>
+            </div>
+            <div class="modal-body">
+                <h3>ایا مطمعین استید که ریکار باید حذب شود؟</h3>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval");
+    <script>
+        $(document).ready(function () {
+            //Language lookup start
+            var languageTable = $('#languageTable').DataTable({
+                "language":
+                {
+                    "processing": "<div class='overlay custom-loader-background'><i class='fa fa-cog fa-spin custom-loader-color'></i></div>"
+                },
+                "processing": true,
+                "serverSide": false,
+                "orderMulti": false,
+                "dom": '<"top"i>rt<"bottom"lp><"clear">',
+                ajax: {
+                    url: "/Lookups/getLanguages",
+                    "type": "GET",
+                    "datatype": "json",
+                },
+                //searching: false, paging: true, info: true,
+                columns: [
+                    {
+                        data: "Name"
+                    },
+                    {
+                        data: "Id",
+                        render: function (data) {
+                            return "<button title='تغیر' class='btn btn-sm btn-success m-1 js-edit-language' data-language-id=" + data + "><i class='fas fa-check m-1'></i>تغیر</button>" +
+                                "<button title='خذب' class='btn btn-sm btn-danger m-1 js-delete-language' data-language-id=" + data + "><i class='fas fa-trash m-1'></i>حذف</button>";
+                        }
+                    }
+                ]
+            });
+            languageTable.on("click", '.js-delete-language', function () {
+                var button = $(this);
+                    bootbox.confirm({
+                    title: "حذب زبان",
+                    message: "ایا مطمعین استید که ریکار باید حذب شود؟",
+                    buttons: {
+                        confirm: {
+                            label: 'حذب',
+                            className: 'btn-success mr-2'
+                        },
+                        cancel: {
+                            label: 'لغو',
+                            className: 'btn-danger'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            $.ajax({
+                                url: "/Lookups/DeleteLanguage/" + button.attr("data-language-id"),
+                                method: "POST",
+                                success: function (response) {
+                                    toastr.success(response.responseText);
+                                    languageTable.row(button.parents("tr")).remove().draw();
+                                },
+                                error: function (response) {
+                                    toastr.error(response.responseText);
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+
+            //Add language
+            $('.addLanguageDialog').on("click", function () {
+                $("#languageModalTitle").html("اضافه نمودن زبان");
+                $("#languageForm")[0].reset();
+                $('#saveLanguageModal').modal('show');
+            });
+
+            //Edit language dialog
+            languageTable.on("click", '.js-edit-language', function () {
+                var button = $(this);
+                var url = "/Lookups/getLanguage/" + button.attr("data-language-id");
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    success: function (data) {
+                        var obj = JSON.parse(data);
+                        $("#languageId").val(obj.Id);
+                        $("#languageName").val(obj.Name)
+                    }
+                })
+                $("#languageModalTitle").html("تغیر نمودن زبان");
+                $('#saveLanguageModal').modal('show');
+            });
+
+            $("#saveLanaguage").click(function () {
+                $("#languageForm").submit(function (e) {
+                    e.preventDefault();
+                    var _form = $("#languageForm")
+                    _form.validate();
+                    if (_form.valid()) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/Lookups/SaveLanguage",
+                            data: $("#languageForm").serialize(),
+                            success: function (response) {
+                                toastr.success(response.responseText);
+                                languageTable.ajax.reload();
+                                $('#saveLanguageModal').modal('hide');
+
+                            },
+                            error: function (response) {
+                                toastr.error(response.responseText);
+                            }
+                        });
+                    } else { return false; }
+
+
+                });
+                $("#languageForm").submit();
+            });
+            //Language lookup end
+
+            //Department lookup start
+            var departmentTable = $('#departmentTable').DataTable({
+                "language":
+                {
+                    "processing": "<div class='overlay custom-loader-background'><i class='fa fa-cog fa-spin custom-loader-color'></i></div>"
+                },
+                "processing": true,
+                "serverSide": false,
+                "orderMulti": false,
+                "dom": '<"top"i>rt<"bottom"lp><"clear">',
+                ajax: {
+                    url: "/Lookups/getDepartments",
+                    "type": "GET",
+                    "datatype": "json",
+                },
+                //searching: false, paging: true, info: true,
+                columns: [
+                    {
+                        data: "Name"
+                    },
+                    {
+                        data: "Id",
+                        render: function (data) {
+                            return "<button title='تغیر' class='btn btn-sm btn-success m-1 js-edit-department' data-department-id=" + data + "><i class='fas fa-check m-1'></i>تغیر</button>" +
+                                "<button title='خذب' class='btn btn-sm btn-danger m-1 js-delete-department' data-department-id=" + data + "><i class='fas fa-trash m-1'></i>حذف</button>";
+                        }
+                    }
+                ]
+            });
+            departmentTable.on("click", '.js-delete-department', function () {
+                var button = $(this);
+
+                bootbox.confirm({
+                    title: "حذب ریاست",
+                    message: "ایا مطمعین هستید که ریکار باید حذب شود؟",
+                    buttons: {
+                        confirm: {
+                            label: 'حذب',
+                            className: 'btn-success mr-2'
+                        },
+                        cancel: {
+                            label: 'لغو',
+                            className: 'btn-danger'
+                        }
+                    },
+                    callback: function (result) {
+                        if (result) {
+                            $.ajax({
+                                url: "/Lookups/deleteDepartment/" + button.attr("data-department-id"),
+                                method: "POST",
+                                success: function (response) {
+                                    toastr.success(response.responseText);
+                                    departmentTable.row(button.parents("tr")).remove().draw();
+                                },
+                                error: function (response) {
+                                    toastr.error(response.responseText);
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+
+            //Add Department
+            $('.addDepartmentDialog').on("click", function () {
+                $("#departmentModalTitle").html("اضافه نمودن ریاست");
+                $("#departmentForm")[0].reset();
+                $('#saveDepartmentModal').modal('show');
+
+            });
+
+            //Edit department dialog
+            departmentTable.on("click", '.js-edit-department', function () {
+                var button = $(this);
+                var url = "/Lookups/getDepartment/" + button.attr("data-department-id");
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    success: function (data) {
+                        var obj = JSON.parse(data);
+                        $("#departmentId").val(obj.Id);
+                        $("#departmentName").val(obj.Name)
+                    }
+                })
+                $("#departmentModalTitle").html("تغیر نمودن زبان");
+                $('#saveDepartmentModal').modal('show');
+            });
+
+            $("#saveDepartment").click(function () {
+                $("#departmentForm").submit(function (e) {
+                    e.preventDefault();
+                    var _form = $("#departmentForm");
+
+                    _form.validate();
+                    if (_form.valid()) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/Lookups/SaveDepartment",
+                            data: _form.serialize(),
+                            success: function (response) {
+                                departmentTable.ajax.reload();
+                                $('#saveDepartmentModal').modal('hide');
+                                toastr.success(response.responseText);
+                            },
+                            error: function (response) {
+                                toastr.error(response.responseText);
+                            }
+                        });
+                    } else { return false;}
+                });
+                $("#departmentForm").submit();
+            });
+            //Department lookup end
+        });
+    </script>
+}
+

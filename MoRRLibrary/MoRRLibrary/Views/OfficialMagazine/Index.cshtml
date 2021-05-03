@@ -1,0 +1,226 @@
+﻿@model IEnumerable<MoRRLibrary.Models.OfficialMagazine>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="h4 mb-2 text-gray-800">جریده ها</h4>
+
+<div class="card shadow">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">جستجو</h6>
+    </div>
+    <div class="card-body">
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label>ناشر</label>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="txtPublisher" />
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>نام جریده</label>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="txtName" />
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label>نمبر مسلسل</label>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="txtSerialNumber" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col text-right">
+                    <button type="button" id="btnSearch" class="btn-success btn-sm pl-lg-5 pr-lg-5">جستجو</button>
+                    <button type="reset" id="btnReset" class="btn-warning btn-sm pl-lg-5 pr-lg-5">لغو</button>
+                </div>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col align-items-lg-end">
+                <a href='@Url.Action("Create","OfficialMagazine")' class="btn btn-sm btn-success">
+                    اضافه نمودن جریده
+                    <i class="fas fa-plus"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card shadow mt-2">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">لیست جریده ها</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped" style="width:100%" cellspacing="0" id="officalMagazinesTable">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.CodeNumber)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Publisher)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.PublicationDate)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.DateEntered)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.SerialNumber)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Quantity)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.CabinetNumber)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ShelfNumber)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@* Delete dialog *@
+<div class="modal fade" id="deleteModel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                <h4 id="ModalTitle">حذب جریده</h4>
+            </div>
+            <div class="modal-body">
+                <h3>ایا مطمعین استید که ریکار باید حذب شود؟</h3>
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+    {
+    <script>
+        $(document).ready(function () {
+            var officalMagazinesTable = $('#officalMagazinesTable').DataTable({
+                "language":
+                {
+                    "processing": "<div class='overlay custom-loader-background'><i class='fa fa-cog fa-spin custom-loader-color'></i></div>"
+                },
+                "processing": true,
+                "serverSide": true,
+                "orderMulti": false,
+                "dom": '<"top"i>rt<"bottom"lp><"clear">',
+                ajax: {
+                    url: "/OfficialMagazine/getOfficialMagazines",
+
+                    "type": "POST",
+                    "datatype": "json"
+                },
+                //searching: false, paging: true, info: true,
+                columns: [
+                    {
+                        data: "CodeNumber"
+                    },
+                    {
+                        data: "Publisher"
+                    },
+                    {
+                        data: "PublicationDate"
+                    },
+                    { 
+                        data: "Name"
+                    },
+                    {
+                        data: "DateEntered"
+                    },
+                    {
+                        data: "SerialNumber"
+                    },
+                    {
+                        data: "Quantity"
+
+                    },
+                    {
+                        data: "CabinetNumber"
+                    },
+                    {
+                        data: "ShelfNumber"
+                    },
+
+                    {
+                        data: "Id",
+                        width:"15%",
+                        render: function (data) {
+                            return "<button title='خذب' class='btn btn-sm btn-danger m-1 js-delete' data-officialmagazine-id=" + data + "><i class='fas fa-trash  p-1'>حذف</i></button>" +
+                                "<a href='/OfficialMagazine/Edit/" + data + "' title='تغیر' class='btn m-1 btn-sm btn-success'><i class='fas fa-check  p-1'>تغیر</i></a>";
+                        }
+                    }
+                ]
+            });
+            $("#btnSearch").on("click", function () {
+                officalMagazinesTable.columns(1).search($('#txtPublisher').val().trim());
+                officalMagazinesTable.columns(3).search($('#txtName').val().trim());
+                officalMagazinesTable.columns(5).search($('#txtSerialNumber').val().trim());
+
+                officalMagazinesTable.draw();
+            });
+            $("#btnReset").click(function () {
+                officalMagazinesTable.columns(1).search("");
+                officalMagazinesTable.columns(3).search("");
+                officalMagazinesTable.columns(5).search("");
+                officalMagazinesTable.draw();
+            })
+
+        //Start delete
+            $('#officalMagazinesTable').on("click", '.js-delete', function () {
+                var button = $(this);
+                bootbox.confirm({
+                title: " ",
+                message: "ایا مطمعین استید که ریکار باید حذب شود؟",
+                buttons: {
+                confirm: {
+                label: 'حذب',
+                className: 'btn-success mr-2'
+                },
+                cancel: {
+                label: 'لغو',
+                className: 'btn-danger'
+            }
+            },
+            callback: function (result) {
+                if (result) {
+                   $.ajax({
+                        url: "/OfficialMagazine/Delete/" + button.attr("data-officialmagazine-id"),
+                        method: "POST",
+                        success: function (response) {
+                            toastr.success(response.responseText);
+                            officalMagazinesTable.row(button.parents("tr")).remove().draw();
+                        }, error: function (response) {
+                        toastr.error(response.responseText);
+                        }
+                    });
+                    }
+                }
+             });
+            });
+        //End delete
+        });
+    </script>
+}
+
+

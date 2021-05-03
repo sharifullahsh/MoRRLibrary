@@ -1,0 +1,68 @@
+﻿/*body *
+{
+    text-align:right !important;
+}*/
+.rtl-navbar {
+    margin-left: 20px !important;
+}
+p.addNewRecord {
+    float: left !important;
+}
+button .js-delete {
+    margin-left: 15px !important;
+}
+h1,h2,h3,h4,h5,h6{
+    text-align:right;
+}
+.form-group {
+    text-align: right;
+}
+.searchButton{
+    text-align:right;
+}
+.table-responsive {
+    text-align: center !important;
+}
+.dataTables_info {
+    text-align: left !important;
+}
+div.dataTables_wrapper div.dataTables_paginate{
+    direction:ltr;
+}
+select{
+    direction:ltr !important;
+    text-align:center !important;
+}
+.modal-header .close {
+    padding: 0rem 0rem !important;
+    margin: 0rem 0rem 0rem 0rem !important;
+}
+#viewDetails {
+    text-align: right !important;
+}
+ul.nav.nav-tabs{
+    direction:ltr;
+}
+#appHeading p{
+    text-align:right !important;
+}
+.table td {
+    padding:0.4rem !important;
+}
+.dataTables_info{
+    display:none !important;
+}
+#userInfo a {
+    text-align: right !important;
+}
+/*Style for persion calander month names*/
+tbody.days tr td{
+    white-space:pre !important;
+    font-weight:400 !important;
+}
+.bootbox-body{
+    text-align:right !important;
+}
+.validation-summary-errors{
+    text-align:right !important;
+}
